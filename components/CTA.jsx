@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { useRef, useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { ArrowRight, Calendar, Sparkles, Zap, Clock, CheckCircle2 } from 'lucide-react'
 
 const benefits = [
@@ -12,31 +12,23 @@ const benefits = [
 
 export default function CTA() {
   const sectionRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  })
-  
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100])
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   return (
-    <section ref={sectionRef} id="contact" className="py-32 relative overflow-hidden">
-      {/* Animated Background */}
+    <section ref={sectionRef} id="contact" className="py-20 md:py-32 relative overflow-hidden">
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-dark via-primary/5 to-dark" />
       
-      {/* Floating Orbs */}
-      <motion.div 
-        style={{ y }}
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px] pointer-events-none"
-      />
-      <motion.div 
-        style={{ y: useTransform(scrollYProgress, [0, 1], [-50, 50]) }}
-        className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/20 rounded-full blur-[120px] pointer-events-none"
-      />
-      
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:32px_32px] pointer-events-none" />
+      {/* Static Orbs - No parallax on mobile */}
+      <div className="absolute top-1/4 left-1/4 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-primary/20 rounded-full blur-[80px] md:blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-secondary/20 rounded-full blur-[60px] md:blur-[120px] pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <motion.div
@@ -47,7 +39,7 @@ export default function CTA() {
           className="relative"
         >
           {/* Main Card */}
-          <div className="relative p-12 md:p-16 rounded-[2.5rem] border border-white/10 bg-card/80 backdrop-blur-xl overflow-hidden">
+          <div className="relative p-6 md:p-16 rounded-2xl md:rounded-[2.5rem] border border-white/10 bg-card/80 backdrop-blur-sm md:backdrop-blur-xl overflow-hidden">
             {/* Inner Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px] bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
@@ -70,17 +62,11 @@ export default function CTA() {
               </motion.div>
 
               {/* Headline */}
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 leading-tight"
-              >
+              <h2 className="text-2xl md:text-5xl lg:text-6xl font-display font-bold mb-4 md:mb-6 leading-tight">
                 Ready to Turn Your
                 <br />
                 <span className="text-gradient">Idea Into Reality?</span>
-              </motion.h2>
+              </h2>
 
               {/* Subheadline */}
               <motion.p
@@ -150,37 +136,26 @@ export default function CTA() {
             </div>
           </div>
 
-          {/* Floating Elements */}
-          <motion.div
-            animate={{ 
-              y: [0, -10, 0],
-              rotate: [0, 5, 0]
-            }}
-            transition={{ 
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute -top-6 -left-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20"
-          >
-            <Sparkles size={20} className="text-white" />
-          </motion.div>
+          {/* Floating Elements - Hidden on mobile */}
+          {!isMobile && (
+            <>
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-6 -left-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20"
+              >
+                <Sparkles size={20} className="text-white" />
+              </motion.div>
 
-          <motion.div
-            animate={{ 
-              y: [0, 10, 0],
-              rotate: [0, -5, 0]
-            }}
-            transition={{ 
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
-            }}
-            className="absolute -bottom-4 -right-4 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg shadow-emerald-500/20"
-          >
-            <Zap size={18} className="text-white" />
-          </motion.div>
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute -bottom-4 -right-4 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg shadow-emerald-500/20"
+              >
+                <Zap size={18} className="text-white" />
+              </motion.div>
+            </>
+          )}
         </motion.div>
 
         {/* Bottom Text */}

@@ -303,12 +303,10 @@ export default function Results() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" })
 
   return (
-    <section id="results" className="py-32 bg-gradient-to-b from-dark via-black to-dark relative overflow-hidden">
-      {/* Background Effects */}
+    <section id="results" className="py-20 md:py-32 bg-gradient-to-b from-dark via-black to-dark relative overflow-hidden">
+      {/* Background Effects - Simplified */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:32px_32px]" />
+        <div className="absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-primary/5 rounded-full blur-[80px] md:blur-[150px]" />
       </div>
       
       <div ref={sectionRef} className="max-w-7xl mx-auto px-6 relative z-10">

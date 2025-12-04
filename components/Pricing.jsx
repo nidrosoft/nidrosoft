@@ -99,14 +99,13 @@ const Pricing = () => {
   const [activeTab, setActiveTab] = useState('project') // 'project' or 'flexible'
 
   return (
-    <section id="pricing" className="py-32 bg-gradient-to-b from-dark via-black to-dark relative overflow-hidden">
-      {/* Background Effects */}
+    <section id="pricing" className="py-20 md:py-32 bg-gradient-to-b from-dark via-black to-dark relative overflow-hidden">
+      {/* Background Effects - Simplified */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/4 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-primary/5 rounded-full blur-[80px] md:blur-[150px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <motion.div

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Palette, Layout, Server, Brain, Cloud, Smartphone } from 'lucide-react'
 
@@ -88,10 +88,44 @@ const explosionPositions = [
   { x: 60, y: 60 },    // bottom-right
 ]
 
-function ExplodingCard({ category, index }) {
-  const [isHovered, setIsHovered] = useState(false)
+function ExplodingCard({ category, index, isMobile }) {
+  const [isExpanded, setIsExpanded] = useState(false)
   const Icon = category.icon
 
+  // On mobile, show tools directly without hover
+  if (isMobile) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.05 }}
+        className="relative p-4 rounded-2xl border border-white/10 bg-card/50"
+      >
+        {/* Category Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className={`${category.bgColor} w-10 h-10 rounded-xl flex items-center justify-center`}>
+            <Icon size={20} className="text-white" />
+          </div>
+          <h3 className="text-base font-bold text-white">{category.name}</h3>
+        </div>
+        
+        {/* Tools Grid - Always visible on mobile */}
+        <div className="grid grid-cols-4 gap-2">
+          {category.tools.map((tool) => (
+            <div key={tool.name} className="flex flex-col items-center">
+              <div className="w-10 h-10 p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                <img src={tool.logo} alt={tool.name} className="w-full h-full object-contain" />
+              </div>
+              <span className="mt-1 text-[10px] text-gray-500 text-center truncate w-full">{tool.name}</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    )
+  }
+
+  // Desktop version with hover
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -99,21 +133,16 @@ function ExplodingCard({ category, index }) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
       className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
     >
-      {/* Main Card */}
-      <motion.div
-        className={`relative h-48 md:h-56 rounded-3xl border border-white/10 bg-card/50 backdrop-blur-sm cursor-pointer overflow-hidden transition-colors duration-300 ${isHovered ? 'border-white/30 bg-card/80' : ''}`}
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className={`relative h-56 rounded-3xl border border-white/10 bg-card/50 cursor-pointer overflow-hidden transition-colors duration-300 ${isExpanded ? 'border-white/30 bg-card/80' : ''}`}>
         {/* Background Gradient */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 transition-opacity duration-500 ${isHovered ? 'opacity-10' : ''}`} />
+        <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 transition-opacity duration-500 ${isExpanded ? 'opacity-10' : ''}`} />
         
-        {/* Collapsed State - Category Info */}
+        {/* Collapsed State */}
         <AnimatePresence>
-          {!isHovered && (
+          {!isExpanded && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -121,18 +150,11 @@ function ExplodingCard({ category, index }) {
               transition={{ duration: 0.2 }}
               className="absolute inset-0 flex flex-col items-center justify-center p-6"
             >
-              {/* Icon */}
               <div className={`${category.bgColor} w-16 h-16 rounded-2xl flex items-center justify-center mb-4`}>
                 <Icon size={28} className="text-white" />
               </div>
-              
-              {/* Name */}
               <h3 className="text-xl font-bold text-white mb-2">{category.name}</h3>
-              
-              {/* Tool Count */}
               <p className="text-sm text-gray-500">{category.tools.length} tools</p>
-              
-              {/* Hover Hint */}
               <div className="absolute bottom-4 left-0 right-0 text-center">
                 <span className="text-xs text-gray-600">Hover to explore</span>
               </div>
@@ -140,16 +162,15 @@ function ExplodingCard({ category, index }) {
           )}
         </AnimatePresence>
 
-        {/* Expanded State - Exploded Tools */}
+        {/* Expanded State */}
         <AnimatePresence>
-          {isHovered && (
+          {isExpanded && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              {/* Category Name at Top */}
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -161,29 +182,18 @@ function ExplodingCard({ category, index }) {
                 </span>
               </motion.div>
 
-              {/* Exploding Tools Grid */}
               <div className="relative w-full h-full flex items-center justify-center">
                 {category.tools.map((tool, toolIndex) => (
                   <motion.div
                     key={tool.name}
-                    initial={{ 
-                      opacity: 0, 
-                      scale: 0,
-                      x: 0,
-                      y: 0
-                    }}
+                    initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                     animate={{ 
                       opacity: 1, 
                       scale: 1,
                       x: explosionPositions[toolIndex].x,
                       y: explosionPositions[toolIndex].y
                     }}
-                    exit={{ 
-                      opacity: 0, 
-                      scale: 0,
-                      x: 0,
-                      y: 0
-                    }}
+                    exit={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                     transition={{ 
                       type: "spring",
                       stiffness: 300,
@@ -192,19 +202,9 @@ function ExplodingCard({ category, index }) {
                     }}
                     className="absolute flex flex-col items-center"
                   >
-                    {/* Tool Logo */}
-                    <motion.div 
-                      className="w-12 h-12 md:w-14 md:h-14 p-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <img 
-                        src={tool.logo} 
-                        alt={tool.name}
-                        className="w-full h-full object-contain"
-                      />
-                    </motion.div>
-                    
-                    {/* Tool Name */}
+                    <div className="w-14 h-14 p-2 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                      <img src={tool.logo} alt={tool.name} className="w-full h-full object-contain" />
+                    </div>
                     <motion.span 
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -219,64 +219,50 @@ function ExplodingCard({ category, index }) {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Corner Glow */}
-        <div className={`absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br ${category.color} opacity-0 rounded-full blur-3xl transition-opacity duration-500 ${isHovered ? 'opacity-30' : ''}`} />
-      </motion.div>
+      </div>
     </motion.div>
   )
 }
 
 export default function TechStack() {
   const sectionRef = useRef(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   return (
-    <section id="tech-stack" className="py-32 bg-dark relative overflow-hidden">
-      {/* Background Effects */}
+    <section id="tech-stack" className="py-20 md:py-32 bg-dark relative overflow-hidden">
+      {/* Background Effects - Simplified on mobile */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/3 left-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/5 rounded-full blur-[100px] md:blur-[150px]" />
       </div>
 
-      <div ref={sectionRef} className="max-w-5xl mx-auto px-6 relative z-10">
+      <div ref={sectionRef} className="max-w-5xl mx-auto px-4 md:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 mb-6"
-          >
+        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 mb-4 md:mb-6">
             <Sparkles size={14} className="text-primary" />
             Tech Stack
-          </motion.div>
+          </div>
           
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-display font-bold mb-6"
-          >
-            Tools I{' '}
-            <span className="text-gradient">Work With</span>
-          </motion.h2>
+          <h2 className="text-3xl md:text-6xl font-display font-bold mb-4 md:mb-6">
+            Tools I <span className="text-gradient">Work With</span>
+          </h2>
           
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-gray-400 text-lg md:text-xl"
-          >
-            Hover to explore the technologies powering your next product.
-          </motion.p>
+          <p className="text-gray-400 text-base md:text-xl">
+            {isMobile ? 'Technologies powering your next product.' : 'Hover to explore the technologies powering your next product.'}
+          </p>
         </div>
 
-        {/* 2x3 Grid of Exploding Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        {/* Grid - 1 column on mobile, 3 on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {techCategories.map((category, index) => (
-            <ExplodingCard key={category.name} category={category} index={index} />
+            <ExplodingCard key={category.name} category={category} index={index} isMobile={isMobile} />
           ))}
         </div>
       </div>

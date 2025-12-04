@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Code2, Rocket, Cpu } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const techStack = [
   { name: "React", icon: "⚛️" },
@@ -16,128 +17,54 @@ const techStack = [
 ];
 
 export default function Hero() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-      {/* Animated Background Gradient Orbs */}
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.2, 1],
-          x: [0, 50, 0],
-          y: [0, -30, 0],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] pointer-events-none" 
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.3, 1],
-          x: [0, -40, 0],
-          y: [0, 40, 0],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[100px] pointer-events-none" 
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.4, 1],
-          x: [0, 30, 0],
-          y: [0, -20, 0],
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-[30%] left-[-10%] w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" 
-      />
+      {/* Static Background Gradient Orbs - No animation on mobile */}
+      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-primary/20 rounded-full blur-[80px] md:blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-secondary/20 rounded-full blur-[60px] md:blur-[100px] pointer-events-none" />
       
-      {/* Animated Grid Background */}
+      {/* Grid Background - Static */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_40%,transparent_100%)]" />
         
-        {/* Horizontal Beam Lines */}
-        <motion.div
-          className="absolute h-[1px] w-[200px] bg-gradient-to-r from-transparent via-primary/30 to-transparent blur-[1px]"
-          style={{ top: '15%', left: '-200px' }}
-          animate={{ x: ['0%', 'calc(100vw + 400px)'] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear', delay: 0 }}
-        />
-        <motion.div
-          className="absolute h-[1px] w-[300px] bg-gradient-to-r from-transparent via-secondary/20 to-transparent blur-[1px]"
-          style={{ top: '35%', left: '-300px' }}
-          animate={{ x: ['0%', 'calc(100vw + 600px)'] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'linear', delay: 2 }}
-        />
-        <motion.div
-          className="absolute h-[1px] w-[150px] bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent blur-[1px]"
-          style={{ top: '55%', left: '-150px' }}
-          animate={{ x: ['0%', 'calc(100vw + 300px)'] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'linear', delay: 5 }}
-        />
-        <motion.div
-          className="absolute h-[1px] w-[250px] bg-gradient-to-r from-transparent via-primary/20 to-transparent blur-[1px]"
-          style={{ top: '70%', left: '-250px' }}
-          animate={{ x: ['0%', 'calc(100vw + 500px)'] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'linear', delay: 3 }}
-        />
-        <motion.div
-          className="absolute h-[1px] w-[180px] bg-gradient-to-r from-transparent via-secondary/25 to-transparent blur-[1px]"
-          style={{ top: '85%', left: '-180px' }}
-          animate={{ x: ['0%', 'calc(100vw + 360px)'] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'linear', delay: 7 }}
-        />
-        <motion.div
-          className="absolute h-[1px] w-[220px] bg-gradient-to-r from-transparent via-emerald-500/15 to-transparent blur-[1px]"
-          style={{ top: '45%', left: '-220px' }}
-          animate={{ x: ['0%', 'calc(100vw + 440px)'] }}
-          transition={{ duration: 13, repeat: Infinity, ease: 'linear', delay: 1 }}
-        />
-        
-        {/* Vertical Beam Lines */}
-        <motion.div
-          className="absolute w-[1px] h-[200px] bg-gradient-to-b from-transparent via-primary/25 to-transparent blur-[1px]"
-          style={{ left: '15%', top: '-200px' }}
-          animate={{ y: ['0%', 'calc(100vh + 400px)'] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'linear', delay: 1 }}
-        />
-        <motion.div
-          className="absolute w-[1px] h-[250px] bg-gradient-to-b from-transparent via-secondary/20 to-transparent blur-[1px]"
-          style={{ left: '35%', top: '-250px' }}
-          animate={{ y: ['0%', 'calc(100vh + 500px)'] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'linear', delay: 4 }}
-        />
-        <motion.div
-          className="absolute w-[1px] h-[180px] bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent blur-[1px]"
-          style={{ left: '55%', top: '-180px' }}
-          animate={{ y: ['0%', 'calc(100vh + 360px)'] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'linear', delay: 6 }}
-        />
-        <motion.div
-          className="absolute w-[1px] h-[220px] bg-gradient-to-b from-transparent via-primary/20 to-transparent blur-[1px]"
-          style={{ left: '75%', top: '-220px' }}
-          animate={{ y: ['0%', 'calc(100vh + 440px)'] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'linear', delay: 2 }}
-        />
-      </div>
-
-      {/* Floating Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white/20 rounded-full"
-            style={{
-              left: `${15 + i * 15}%`,
-              top: `${20 + (i % 3) * 25}%`,
-            }}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5,
-            }}
-          />
-        ))}
+        {/* Beam Lines - Only on desktop */}
+        {!isMobile && (
+          <>
+            <motion.div
+              className="absolute h-[1px] w-[200px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"
+              style={{ top: '15%', left: '-200px' }}
+              animate={{ x: ['0%', 'calc(100vw + 400px)'] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+            />
+            <motion.div
+              className="absolute h-[1px] w-[300px] bg-gradient-to-r from-transparent via-secondary/20 to-transparent"
+              style={{ top: '45%', left: '-300px' }}
+              animate={{ x: ['0%', 'calc(100vw + 600px)'] }}
+              transition={{ duration: 12, repeat: Infinity, ease: 'linear', delay: 2 }}
+            />
+            <motion.div
+              className="absolute w-[1px] h-[200px] bg-gradient-to-b from-transparent via-primary/25 to-transparent"
+              style={{ left: '25%', top: '-200px' }}
+              animate={{ y: ['0%', 'calc(100vh + 400px)'] }}
+              transition={{ duration: 10, repeat: Infinity, ease: 'linear', delay: 1 }}
+            />
+            <motion.div
+              className="absolute w-[1px] h-[250px] bg-gradient-to-b from-transparent via-secondary/20 to-transparent"
+              style={{ left: '75%', top: '-250px' }}
+              animate={{ y: ['0%', 'calc(100vh + 500px)'] }}
+              transition={{ duration: 14, repeat: Infinity, ease: 'linear', delay: 4 }}
+            />
+          </>
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import { 
   Search, 
@@ -245,18 +245,78 @@ function ProgressBar({ scrollYProgress, isInView }) {
   )
 }
 
+// Simple Mobile Card
+function MobileProcessCard({ step, index }) {
+  const Icon = step.icon
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className="relative p-6 rounded-2xl border border-white/10 bg-card/50"
+    >
+      <div className="flex items-start gap-4">
+        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center flex-shrink-0`}>
+          <Icon size={24} className="text-white" />
+        </div>
+        <div>
+          <div className="text-xs text-gray-500 mb-1">Step {step.id}</div>
+          <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+          <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
 export default function Process() {
   const containerRef = useRef(null)
   const headerRef = useRef(null)
   const stickyRef = useRef(null)
   const isHeaderInView = useInView(headerRef, { once: true, margin: "-50px" })
   const isStickyInView = useInView(stickyRef, { margin: "-10% 0px -10% 0px" })
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   })
 
+  // Mobile version - simple vertical list
+  if (isMobile) {
+    return (
+      <section className="py-20 bg-black px-4">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 mb-4">
+            <Sparkles size={14} className="text-primary" />
+            How I Work
+          </div>
+          <h2 className="text-3xl font-display font-bold mb-4">
+            From Idea to <span className="text-gradient">Impact</span>
+          </h2>
+          <p className="text-gray-400 text-base">
+            A proven process that transforms your vision into reality.
+          </p>
+        </div>
+        
+        <div className="space-y-4 max-w-lg mx-auto">
+          {steps.map((step, index) => (
+            <MobileProcessCard key={step.id} step={step} index={index} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  // Desktop version with scroll animations
   return (
     <section className="relative bg-black">
       {/* Section Header */}
@@ -307,7 +367,7 @@ export default function Process() {
         </motion.div>
       </div>
 
-      {/* Scrolling Cards Container */}
+      {/* Scrolling Cards Container - Desktop Only */}
       <div ref={containerRef} className="h-[500vh] relative -mt-32">
         <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden pt-20">
           {/* Background that shifts color */}
