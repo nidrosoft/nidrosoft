@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import { 
   Search, 
@@ -276,24 +276,16 @@ export default function Process() {
   const stickyRef = useRef(null)
   const isHeaderInView = useInView(headerRef, { once: true, margin: "-50px" })
   const isStickyInView = useInView(stickyRef, { margin: "-10% 0px -10% 0px" })
-  const [isMobile, setIsMobile] = useState(false)
-  
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   })
 
-  // Mobile version - simple vertical list
-  if (isMobile) {
-    return (
-      <section className="py-20 bg-black px-4">
+  return (
+    <>
+      {/* Mobile version - simple vertical list */}
+      <section className="py-20 bg-black px-4 md:hidden">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-400 mb-4">
             <Sparkles size={14} className="text-primary" />
@@ -313,12 +305,9 @@ export default function Process() {
           ))}
         </div>
       </section>
-    )
-  }
 
-  // Desktop version with scroll animations
-  return (
-    <section className="relative bg-black">
+      {/* Desktop version with scroll animations */}
+      <section className="relative bg-black hidden md:block">
       {/* Section Header */}
       <div ref={headerRef} className="py-16 text-center max-w-3xl mx-auto px-6">
         <motion.div
@@ -405,5 +394,6 @@ export default function Process() {
         </div>
       </div>
     </section>
+    </>
   )
 }

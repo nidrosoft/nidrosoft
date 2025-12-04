@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Palette, Layout, Server, Brain, Cloud, Smartphone } from 'lucide-react'
 
@@ -88,44 +88,42 @@ const explosionPositions = [
   { x: 60, y: 60 },    // bottom-right
 ]
 
-function ExplodingCard({ category, index, isMobile }) {
+// Mobile Tech Card - Simple layout without hover
+function MobileTechCard({ category, index }) {
+  const Icon = category.icon
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.05 }}
+      className="relative p-4 rounded-2xl border border-white/10 bg-card/50"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className={`${category.bgColor} w-10 h-10 rounded-xl flex items-center justify-center`}>
+          <Icon size={20} className="text-white" />
+        </div>
+        <h3 className="text-base font-bold text-white">{category.name}</h3>
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        {category.tools.map((tool) => (
+          <div key={tool.name} className="flex flex-col items-center">
+            <div className="w-10 h-10 p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+              <img src={tool.logo} alt={tool.name} className="w-full h-full object-contain" />
+            </div>
+            <span className="mt-1 text-[10px] text-gray-500 text-center truncate w-full">{tool.name}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
+
+// Desktop Exploding Card with hover
+function ExplodingCard({ category, index }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const Icon = category.icon
 
-  // On mobile, show tools directly without hover
-  if (isMobile) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: index * 0.05 }}
-        className="relative p-4 rounded-2xl border border-white/10 bg-card/50"
-      >
-        {/* Category Header */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className={`${category.bgColor} w-10 h-10 rounded-xl flex items-center justify-center`}>
-            <Icon size={20} className="text-white" />
-          </div>
-          <h3 className="text-base font-bold text-white">{category.name}</h3>
-        </div>
-        
-        {/* Tools Grid - Always visible on mobile */}
-        <div className="grid grid-cols-4 gap-2">
-          {category.tools.map((tool) => (
-            <div key={tool.name} className="flex flex-col items-center">
-              <div className="w-10 h-10 p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
-                <img src={tool.logo} alt={tool.name} className="w-full h-full object-contain" />
-              </div>
-              <span className="mt-1 text-[10px] text-gray-500 text-center truncate w-full">{tool.name}</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    )
-  }
-
-  // Desktop version with hover
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -226,14 +224,6 @@ function ExplodingCard({ category, index, isMobile }) {
 
 export default function TechStack() {
   const sectionRef = useRef(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   return (
     <section id="tech-stack" className="py-20 md:py-32 bg-dark relative overflow-hidden">
@@ -255,14 +245,22 @@ export default function TechStack() {
           </h2>
           
           <p className="text-gray-400 text-base md:text-xl">
-            {isMobile ? 'Technologies powering your next product.' : 'Hover to explore the technologies powering your next product.'}
+            <span className="md:hidden">Technologies powering your next product.</span>
+            <span className="hidden md:inline">Hover to explore the technologies powering your next product.</span>
           </p>
         </div>
 
-        {/* Grid - 1 column on mobile, 3 on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        {/* Mobile Grid */}
+        <div className="grid grid-cols-1 gap-4 md:hidden">
           {techCategories.map((category, index) => (
-            <ExplodingCard key={category.name} category={category} index={index} isMobile={isMobile} />
+            <MobileTechCard key={category.name} category={category} index={index} />
+          ))}
+        </div>
+
+        {/* Desktop Grid */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6">
+          {techCategories.map((category, index) => (
+            <ExplodingCard key={category.name} category={category} index={index} />
           ))}
         </div>
       </div>

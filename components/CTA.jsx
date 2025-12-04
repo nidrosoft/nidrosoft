@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Calendar, Sparkles, Zap, Clock, CheckCircle2 } from 'lucide-react'
 
@@ -12,14 +12,6 @@ const benefits = [
 
 export default function CTA() {
   const sectionRef = useRef(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   return (
     <section ref={sectionRef} id="contact" className="py-20 md:py-32 relative overflow-hidden">
@@ -136,26 +128,22 @@ export default function CTA() {
             </div>
           </div>
 
-          {/* Floating Elements - Hidden on mobile */}
-          {!isMobile && (
-            <>
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-6 -left-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20"
-              >
-                <Sparkles size={20} className="text-white" />
-              </motion.div>
+          {/* Floating Elements - Hidden on mobile via CSS */}
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="hidden md:flex absolute -top-6 -left-6 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary items-center justify-center shadow-lg shadow-primary/20"
+          >
+            <Sparkles size={20} className="text-white" />
+          </motion.div>
 
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute -bottom-4 -right-4 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg shadow-emerald-500/20"
-              >
-                <Zap size={18} className="text-white" />
-              </motion.div>
-            </>
-          )}
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="hidden md:flex absolute -bottom-4 -right-4 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 items-center justify-center shadow-lg shadow-emerald-500/20"
+          >
+            <Zap size={18} className="text-white" />
+          </motion.div>
         </motion.div>
 
         {/* Bottom Text */}
