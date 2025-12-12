@@ -2,15 +2,18 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, Sparkles, ExternalLink, Smartphone, Globe } from 'lucide-react'
+import { ArrowUpRight, Sparkles, ExternalLink, Smartphone, Globe, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { projectsData } from '@/lib/projectsData'
 
 const filters = ['All', 'Mobile App', 'Web App', 'AI']
 
+const PROJECTS_PER_BATCH = 3
+
 export default function Work() {
   const [activeFilter, setActiveFilter] = useState('All')
   const [hoveredProject, setHoveredProject] = useState(null)
+  const [visibleCount, setVisibleCount] = useState(PROJECTS_PER_BATCH)
 
   const filteredProjects = activeFilter === 'All' 
     ? projectsData 
@@ -20,6 +23,20 @@ export default function Work() {
 
   // Get featured projects (first 3)
   const featuredProjects = projectsData.filter(p => p.featured)
+  
+  // Get visible projects based on current count
+  const visibleProjects = filteredProjects.slice(0, visibleCount)
+  const hasMoreProjects = visibleCount < filteredProjects.length
+  
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + PROJECTS_PER_BATCH)
+  }
+  
+  // Reset visible count when filter changes
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter)
+    setVisibleCount(PROJECTS_PER_BATCH)
+  }
 
   return (
     <section id="work" className="py-32 bg-dark relative overflow-hidden">
@@ -75,7 +92,7 @@ export default function Work() {
           {filters.map((filter) => (
             <button
               key={filter}
-              onClick={() => setActiveFilter(filter)}
+              onClick={() => handleFilterChange(filter)}
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeFilter === filter
                   ? 'bg-white text-black'
@@ -177,7 +194,7 @@ export default function Work() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => (
+            {visibleProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 layout
@@ -245,6 +262,26 @@ export default function Work() {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Load More Button */}
+        {hasMoreProjects && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-12 text-center"
+          >
+            <button
+              onClick={handleLoadMore}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
+            >
+              <span>Load More Projects</span>
+              <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />
+            </button>
+            <p className="text-gray-500 text-sm mt-3">
+              Showing {visibleProjects.length} of {filteredProjects.length} projects
+            </p>
+          </motion.div>
+        )}
 
         {/* CTA */}
         <motion.div
