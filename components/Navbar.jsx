@@ -77,7 +77,15 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-3">
+          <a
+            href="https://calendar.app.google/GCtfuTx3Ms6K7d579"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-600 transition-colors inline-block"
+          >
+            Book a Meeting
+          </a>
           <Link
             href="/contact"
             className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-200 transition-colors inline-block"
@@ -120,12 +128,21 @@ export default function Navbar() {
                   {link.name}
                 </a>
               ))}
+              <a
+                href="https://calendar.app.google/GCtfuTx3Ms6K7d579"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="bg-primary text-white px-6 py-3 rounded-full text-center font-semibold"
+              >
+                Book a Meeting
+              </a>
               <Link
                 href="/contact"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="bg-white text-black px-6 py-3 rounded-full text-center font-semibold"
               >
-                Start Project
+                Let&apos;s Talk
               </Link>
             </div>
           </motion.div>

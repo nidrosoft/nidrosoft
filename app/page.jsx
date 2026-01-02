@@ -7,7 +7,11 @@ import Process from '@/components/Process'
 import Work from '@/components/Work'
 import Results from '@/components/Results'
 import TechStack from '@/components/TechStack'
+import Industries from '@/components/Industries'
 import Pricing from '@/components/Pricing'
+import ClientReviews from '@/components/ClientReviews'
+import FAQ from '@/components/FAQ'
+import BookingCTA from '@/components/BookingCTA'
 import CTA from '@/components/CTA'
 import Footer from '@/components/Footer'
 
@@ -23,7 +27,11 @@ export default function Home() {
         <Work />
         <Results />
         <TechStack />
+        <Industries />
         <Pricing />
+        <ClientReviews />
+        <FAQ />
+        <BookingCTA />
         <CTA />
       </main>
       

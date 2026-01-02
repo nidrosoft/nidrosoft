@@ -82,7 +82,7 @@ export default function CTA() {
               >
                 {/* Primary CTA */}
                 <a
-                  href="https://cal.com"
+                  href="https://calendar.app.google/GCtfuTx3Ms6K7d579"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]"
